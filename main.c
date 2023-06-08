@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbozdemi <rbozdemi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: muyumak <muyumak@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 16:20:24 by rbozdemi          #+#    #+#             */
-/*   Updated: 2023/06/06 19:44:18 by rbozdemi         ###   ########.fr       */
+/*   Updated: 2023/06/08 01:14:47 by muyumak          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,48 @@ int	file_check(t_map *mapes)
 	return (0);
 }
 
+unsigned int	hex_to_decimal(const char *hex)
+{
+	unsigned int	decimal;
+	char			c;
+		int value;
+
+	decimal = 0;
+	// Hexadecimal sayıyı dönüştürme
+	for (int i = 2; hex[i] != '\0'; i++)
+	{
+		c = hex[i];
+		if (c >= '0' && c <= '9')
+		{
+			value = c - '0';
+		}
+		else if (c >= 'A' && c <= 'F')
+		{
+			value = c - 'A' + 10;
+		}
+		else if (c >= 'a' && c <= 'f')
+		{
+			value = c - 'a' + 10;
+		}
+		else
+		{
+			printf("Geçersiz hex renk kodu: %s\n", hex);
+			exit(1);
+		}
+		decimal = decimal * 16 + value;
+	}
+	return (decimal);
+}
+
 void	start_mlx(t_map *map)
 {
-	map->x_resolution = 1920;
-	map->y_resolution = 1152;
+	map->x_resolution = 640;
+	map->y_resolution = 320;
 	map->mlx_ptr = mlx_init();
 	map->mlx_win = mlx_new_window(map->mlx_ptr, map->x_resolution,
 			map->y_resolution, "cub3d");
 	draw_background(map);
+	draw_cubes(map);
 	mlx_hook(map->mlx_win, 17, 0, &key_p, map);
 	mlx_hook(map->mlx_win, 2, 0, &key_press, map);
 	mlx_loop(map->mlx_ptr);
@@ -76,14 +110,15 @@ char	*convertToHex(int red, int green, int blue, char *hexCode)
 	char	*hexValues;
 
 	hexValues = ft_strdup("0123456789ABCDEF");
-	hexCode[0] = '#';
-	hexCode[1] = hexValues[(red >> 4) & 0x0F];
-	hexCode[2] = hexValues[red & 0x0F];
-	hexCode[3] = hexValues[(green >> 4) & 0x0F];
-	hexCode[4] = hexValues[green & 0x0F];
-	hexCode[5] = hexValues[(blue >> 4) & 0x0F];
-	hexCode[6] = hexValues[blue & 0x0F];
-	hexCode[7] = '\0';
+	hexCode[0] = '0';
+	hexCode[1] = 'x';
+	hexCode[2] = hexValues[(red >> 4) & 0x0F];
+	hexCode[3] = hexValues[red & 0x0F];
+	hexCode[4] = hexValues[(green >> 4) & 0x0F];
+	hexCode[5] = hexValues[green & 0x0F];
+	hexCode[6] = hexValues[(blue >> 4) & 0x0F];
+	hexCode[7] = hexValues[blue & 0x0F];
+	hexCode[8] = '\0';
 	free(hexValues);
 	return (hexCode);
 }
@@ -132,6 +167,7 @@ int	main(int argc, char **argv)
 	printf("n: %s\n", mapes.no);
 	printf("w: %s\n", mapes.we);
 	printf("e: %s\n", mapes.ea);
+	printf("%d\n", ft_atoi("0x0000FF"));
 	while (mapes.map[i])
 	{
 		printf("%s\n", mapes.map[i]);
