@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: muyumak <muyumak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: melih <melih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/16 16:20:24 by rbozdemi          #+#    #+#             */
-/*   Updated: 2023/06/08 01:14:47 by muyumak          ###   ########.fr       */
+/*   Updated: 2023/06/12 15:43:03 by melih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,15 +93,23 @@ unsigned int	hex_to_decimal(const char *hex)
 
 void	start_mlx(t_map *map)
 {
-	map->x_resolution = 640;
-	map->y_resolution = 320;
+	get_pos_dir(map);
+	get_direction(map);
+	map->move_speed = 0.1;
+	map->rotate_speed = 0.04;
+	map->img_width = 64;
+	map->img_height = 64;
+	map->x_resolution = 1280;
+	map->y_resolution = 640;
 	map->mlx_ptr = mlx_init();
 	map->mlx_win = mlx_new_window(map->mlx_ptr, map->x_resolution,
-			map->y_resolution, "cub3d");
-	draw_background(map);
-	draw_cubes(map);
-	mlx_hook(map->mlx_win, 17, 0, &key_p, map);
+			map->y_resolution, "Cub3d");
+	get_image_data(map);
+	map->img_screen = mlx_new_image(map->mlx_ptr, map->x_resolution, map->y_resolution);
+	map->screen_data = (int *)mlx_get_data_addr(map->img_screen, &map->bpp, &map->size_line, &map->endian);
+	mlx_loop_hook(map->mlx_ptr, &raycasting, map);
 	mlx_hook(map->mlx_win, 2, 0, &key_press, map);
+	mlx_hook(map->mlx_win, 17, 0, &key_p, map);
 	mlx_loop(map->mlx_ptr);
 }
 

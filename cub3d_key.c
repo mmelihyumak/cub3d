@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_key.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: muyumak <muyumak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: melih <melih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 18:12:14 by muyumak           #+#    #+#             */
-/*   Updated: 2023/06/08 00:27:30 by muyumak          ###   ########.fr       */
+/*   Updated: 2023/06/12 21:17:50 by melih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,15 @@ int	key_press(int key, t_map *map)
 	}
 	if (key == 13)
 		move_forward(map);
+	if (key == 1)
+		move_back(map);
+	if (key == 0)
+		move_left(map);
+	if (key == 2)
+		move_right(map);
+	if (key == 123)
+		rotate_left(map);
+	if (key == 124)
+		rotate_right(map);
 	return (0);
 }

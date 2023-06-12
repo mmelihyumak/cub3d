@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d_move.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: muyumak <muyumak@student.42.fr>            +#+  +:+       +#+        */
+/*   By: melih <melih@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/07 23:41:57 by muyumak           #+#    #+#             */
-/*   Updated: 2023/06/08 01:17:17 by muyumak          ###   ########.fr       */
+/*   Updated: 2023/06/12 16:15:07 by melih            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,74 @@
 
 void	move_forward(t_map *map)
 {
-	float	x;
-	float	y;
-	static float	slide_y;
-	static float	slide_x;
-
-	slide_y += 1;
-	slide_x += 1;
-	y = map->y_resolution / 2 - 32 - slide_y;
-	while (y <= map->y_resolution / 2 + 32 + slide_y)
-	{
-		if (x < map->x_resolution / 2 - 32 || x > map->x_resolution / 2 + 32)
-		{
-			x = map->x_resolution / 2 - 32 - slide_x;
-			while (x <= map->x_resolution / 2 + 32 + slide_x)
-			{
-				mlx_pixel_put(map->mlx_ptr, map->mlx_win, x, y, 0xF70202);
-				x += 1;
-			}
-		}
-		y += 1;
-	}
+	if (map->map[(int)(map->pos_x + map->dir_x * map->move_speed)] \
+	[(int)(map->pos_y)] == '0')
+		map->pos_x += map->dir_x * map->move_speed;
+	if (map->map[(int)(map->pos_x)] \
+	[(int)(map->pos_y + map->dir_y * map->move_speed)] != '1')
+		map->pos_y += map->dir_y * map->move_speed;
 }
 
-void	move_back(void)
+void	move_back(t_map *map)
 {
-	
+	if (map->map[(int)(map->pos_x - map->dir_x * map->move_speed)] \
+	[(int)(map->pos_y)] == '0')
+		map->pos_x -= map->dir_x * map->move_speed;
+	if (map->map[(int)(map->pos_x)] \
+	[(int)(map->pos_y - map->dir_y * map->move_speed)] != '1')
+		map->pos_y -= map->dir_y * map->move_speed;
+}
+
+void	move_left(t_map *map)
+{
+	if (map->map[(int)(map->pos_x - map->fov_x * map->move_speed)] \
+	[(int)(map->pos_y)] != '1')
+		map->pos_x -= map->fov_x * map->move_speed;
+	if (map->map[(int)(map->pos_x)] \
+	[(int)(map->pos_y - map->fov_y * map->move_speed)] != '1')
+		map->pos_y -= map->fov_y * map->move_speed;
+}
+
+void	move_right(t_map *map)
+{
+	if (map->map[(int)(map->pos_x + map->fov_x * map->move_speed)] \
+	[(int)(map->pos_y)] != '1')
+		map->pos_x += map->fov_x * map->move_speed;
+	if (map->map[(int)(map->pos_x)] \
+	[(int)(map->pos_y + map->fov_y * map->move_speed)] != '1')
+		map->pos_y += map->fov_y * map->move_speed;
+}
+
+void	rotate_left(t_map *map)
+{
+	double	old_dir_x;
+	double	old_fov_x;
+
+	old_dir_x = map->dir_x;
+	map->dir_x = map->dir_x * cos(map->rotate_speed) \
+	- map->dir_y * sin(map->rotate_speed);
+	map->dir_y = old_dir_x * sin(map->rotate_speed) \
+	+ map->dir_y * cos(map->rotate_speed);
+	old_fov_x = map->fov_x;
+	map->fov_x = map->fov_x * cos(map->rotate_speed) \
+	- map->fov_y * sin(map->rotate_speed);
+	map->fov_y = old_fov_x * sin(map->rotate_speed) \
+	+ map->fov_y * cos(map->rotate_speed);
+}
+
+void	rotate_right(t_map *map)
+{
+	double	old_dir_x;
+	double	old_fov_x;
+
+	old_dir_x = map->dir_x;
+	map->dir_x = map->dir_x * cos(-map->rotate_speed) \
+	- map->dir_y * sin(-map->rotate_speed);
+	map->dir_y = old_dir_x * sin(-map->rotate_speed) \
+	+ map->dir_y * cos(-map->rotate_speed);
+	old_fov_x = map->fov_x;
+	map->fov_x = map->fov_x * cos(-map->rotate_speed) \
+	- map->fov_y * sin(-map->rotate_speed);
+	map->fov_y = old_fov_x * sin(-map->rotate_speed) \
+	+ map->fov_y * cos(-map->rotate_speed);
 }
